@@ -13,14 +13,15 @@
 #import "TicTacToeBoardView.h"
 #import "XView.h"
 #import "OView.h"
+#import "SquareButton.h"
 
 
-#define GridWidth self.view.frame.size.width/3
-#define GridPadding 10.0f
+#define SquareWidth self.view.frame.size.width/3.0f
+#define SquarePadding self.view.frame.size.width/30.0f
 
 @interface TicTacToeViewController ()
-@property(nonatomic,strong)NSMutableArray *gridButtons;
-@property(nonatomic,strong)TicTacToeBoardView *board;
+@property(nonatomic,strong)NSMutableArray *squareButtons;
+@property(nonatomic,strong)TicTacToeBoardView *uiboard;
 
 @property(nonatomic,strong)Game *game;
 @end
@@ -34,51 +35,98 @@
     [super viewDidLoad];
     self.game = [[Game alloc] init];
     [self initializeBoard];
-
-
 }
 
 -(void)initializeBoard{
-    self.board = [[TicTacToeBoardView alloc] initWithFrame:CGRectMake(0,20.0f, self.view.frame.size.width, self.view.frame.size.height)];
-
-    [self.view addSubview:self.board];
+    self.uiboard = [[TicTacToeBoardView alloc] initWithFrame:CGRectMake(0,30, self.view.frame.size.width, self.view.frame.size.height)];
     
-    [self initializeGridButtons];
+    [self.view addSubview:self.uiboard];
+    
+    [self initializeSquareButtons];
 }
 
--(void)initializeGridButtons{
-    self.gridButtons = [[NSMutableArray alloc] initWithCapacity:9];
+-(void)initializeSquareButtons{
+    /*
+     * Add 9 square buttons to the board. On Touch Up it will call selector squarePressedForSquare:
+     * we can get the squareId from there.
+     */
     
-    for (int x=0;x<3;x++){
-        for (int y=0;y<3;y++){
-            UIButton *gridButton = [[UIButton alloc] initWithFrame:CGRectMake(x*GridWidth,y*GridWidth,GridWidth,GridWidth)];
-            
-            //XView *xView = [[XView alloc] initWithFrame:CGRectMake(GridPadding,GridPadding,GridWidth-2*GridPadding,GridWidth-2*GridPadding)];
-            [gridButton addTarget:self
-                       action:@selector(gridPressedForSquare:)
+    self.squareButtons = [[NSMutableArray alloc] initWithCapacity:9];
+    
+    for (int y=0;y<3;y++){
+        for (int x=0;x<3;x++){
+            SquareButton *squareButton = [[SquareButton alloc] initWithFrame:CGRectMake(x*SquareWidth,y*SquareWidth,SquareWidth,SquareWidth)];
+            squareButton.squareId = x+3*y;
+            [squareButton addTarget:self
+                       action:@selector(squarePressedForSquareButton:)
              forControlEvents:UIControlEventTouchUpInside];
             
             
-            [self.board addSubview:gridButton];
-            self.gridButtons[x+y] = gridButton;
+            [self.uiboard addSubview:squareButton];
+            self.squareButtons[x+3*y] = squareButton;
         }
     }
 
 }
 
--(void)gridPressedForSquare:(id)sender{
-    UIButton *gridButton = sender;
+-(void)squarePressedForSquareButton:(id)squareBtn{
+    
+    SquareButton *squareButton = squareBtn;
     if (self.game.playerTurn == PlayerTurn_X){
-        XView *xView = [[XView alloc] initWithFrame:CGRectMake(GridPadding,GridPadding,GridWidth-2*GridPadding,GridWidth-2*GridPadding)];
-        [gridButton addSubview:xView];
+        XView *xView = [[XView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
+        [squareButton addSubview:xView];
         self.game.board[0]=[NSNumber numberWithInt:SquareState_X];
+        self.game.board[squareButton.squareId] = [NSNumber numberWithInt:SquareState_X];
+        
     }else{
-        OView *oView = [[OView alloc] initWithFrame:CGRectMake(GridPadding,GridPadding,GridWidth-2*GridPadding,GridWidth-2*GridPadding)];
-        [gridButton addSubview:oView];
-//        self.game.board[0]=[NSNumber numberWithInt:SquareState_O];
+        OView *oView = [[OView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
+        [squareButton addSubview:oView];
+        self.game.board[squareButton.squareId] = [NSNumber numberWithInt:SquareState_O];
     }
+    
+    [self evaluateBoard];
+    [self togglePlayerTurn];
+    NSLog(@"square pressed %d",squareButton.squareId);
+}
+
+-(void)togglePlayerTurn{
     self.game.playerTurn = !self.game.playerTurn;
-    NSLog(@"grid pressed");
+}
+
+-(void)evaluateBoard{
+    int score = [self.game scoreForBoard:self.game.board andPlayer:self.game.playerTurn];
+    NSLog(@"score of game is %d",score);
+    
+    if ([self.game isWinForScore:score]){
+        NSLog(@"winner!!!");
+        [self winnerIsPlayer:self.game.playerTurn];
+    }else{
+        NSLog(@"no win");
+    }
+    
+}
+
+-(void)resetGame{
+    for (int i=0; i<9;i++)
+        self.game.board[i] = [NSNumber numberWithInt:SquareState_Empty];
+    [[self.uiboard subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    self.game.playerTurn = PlayerTurn_X;
+}
+
+-(void)winnerIsPlayer:(PlayerTurn)player{
+    // disable other squares show winner
+    for (UIButton *squareButton in [self.uiboard subviews]){
+        [squareButton setEnabled:NO];
+    }
+    UILabel *winnerlabel = [[UILabel alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height-40.0f,self.view.frame.size.width,40.0f)];
+    winnerlabel.textAlignment = NSTextAlignmentCenter;
+    winnerlabel.font = [UIFont fontWithName:@"Helvetica" size:30.0f];
+    if (player==PlayerTurn_X){
+        winnerlabel.text = @"X wins!";
+    }else{
+        winnerlabel.text = @"O wins!";
+    }
+    [self.view addSubview:winnerlabel];
 }
 
 

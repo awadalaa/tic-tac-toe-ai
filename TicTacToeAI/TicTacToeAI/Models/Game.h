@@ -28,5 +28,6 @@ PlayerTurn;
 
 @property (nonatomic,assign) PlayerTurn playerTurn;
 @property (nonatomic,strong) NSMutableArray *board; // 3 x 3 array of SquareStates representing the board
-
+-(int)scoreForBoard:(NSArray *)board andPlayer:(PlayerTurn)player;
+-(BOOL)isWinForScore:(int)score;
 @end
