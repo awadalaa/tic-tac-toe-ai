@@ -8,28 +8,21 @@
 
 #import "TicTacToeBoardView.h"
 
-
 @implementation TicTacToeBoardView
-{
-    CGPoint fromPoint;
-    CGPoint toPoint;
-}
 
 - (void)initObject {
-    // Initialization code
     [super setBackgroundColor:[UIColor clearColor]];
 }
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        // Initialization code
         [self initObject];
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect
-{
+{    
     [super drawRect:rect];
     CGContextRef context = UIGraphicsGetCurrentContext();
     

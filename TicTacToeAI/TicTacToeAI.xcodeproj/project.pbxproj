@@ -24,6 +24,7 @@
 		685DC8D719EA0B96001797B4 /* TicTacToeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8D619EA0B96001797B4 /* TicTacToeViewController.m */; };
 		685DC8DA19EA121C001797B4 /* XView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8D919EA121C001797B4 /* XView.m */; };
 		685DC8DD19EA1228001797B4 /* OView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DC19EA1228001797B4 /* OView.m */; };
+		685DC8E019EA25EA001797B4 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DF19EA25EA001797B4 /* Game.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		685DC8D919EA121C001797B4 /* XView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XView.m; sourceTree = "<group>"; };
 		685DC8DB19EA1228001797B4 /* OView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OView.h; sourceTree = "<group>"; };
 		685DC8DC19EA1228001797B4 /* OView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OView.m; sourceTree = "<group>"; };
+		685DC8DE19EA25EA001797B4 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Game.h; path = Models/Game.h; sourceTree = "<group>"; };
+		685DC8DF19EA25EA001797B4 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Game.m; path = Models/Game.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +190,8 @@
 		685DC8D219EA06D9001797B4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				685DC8DE19EA25EA001797B4 /* Game.h */,
+				685DC8DF19EA25EA001797B4 /* Game.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -292,6 +297,7 @@
 				685DC8DA19EA121C001797B4 /* XView.m in Sources */,
 				685DC8CE19EA06BD001797B4 /* TicTacToeBoardView.m in Sources */,
 				685DC8AA19EA063E001797B4 /* main.m in Sources */,
+				685DC8E019EA25EA001797B4 /* Game.m in Sources */,
 				685DC8D719EA0B96001797B4 /* TicTacToeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

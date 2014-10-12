@@ -17,27 +17,6 @@
     return self;
 }
 
-/*
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Setting up the line width, type and color
-    CGContextSetStrokeColorWithColor(context, [UIColor redColor].CGColor);
-    CGContextSetLineCap(context, kCGLineCapRound);
-    CGContextSetLineWidth(context, 0.5);
-    
-    // Draw a line from top left to bottom right
-    CGContextMoveToPoint(context, 0,0);
-    CGContextAddLineToPoint(context,rect.size.width,rect.size.height );
-
-    CGContextMoveToPoint(context, rect.size.width,0);
-    CGContextAddLineToPoint(context,0,rect.size.height);
-    
-    [self setNeedsDisplay];
-}
-*/
 
 - (void)drawRect:(CGRect)rect
 {
