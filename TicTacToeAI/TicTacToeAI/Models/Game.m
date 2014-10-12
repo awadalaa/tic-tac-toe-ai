@@ -74,9 +74,64 @@
         }
     }
     return NO;
-
-    
 }
 
+
+
+/** MiniMax Algorithm **/
+
+-(int)miniMaxScoreForBoard:(NSArray *)board andPlayer:(PlayerTurn)player{
+    if (player==PlayerTurn_X && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
+        return 10;
+    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
+        return -10;
+    }else{
+        return 0;
+    }
+}
+
+
+-(int)miniMaxForCurrentBoard:(NSArray *)currentBoard andCurrentPlayer:(PlayerTurn)player{
+    
+    int perfectChoice=-1;
+    // if someone has already won, just return
+    int score = -1;
+    score =[self miniMaxScoreForBoard:currentBoard andPlayer:player];
+    if (score!=0) return perfectChoice;
+    
+    
+    
+    NSMutableArray *scores = [[NSMutableArray alloc] init];
+    NSMutableArray *moves = [[NSMutableArray alloc] init];
+    NSMutableArray *tempBoard = [NSMutableArray arrayWithArray:[currentBoard copy]];
+    PlayerTurn      tempPlayer = player;
+    
+    // get all available moves
+    // 1 deep lookup
+    for (int y=0;y<3;y++){
+        for (int x=0;x<3;x++){
+            if (currentBoard[3*y+x]==[NSNumber numberWithInt:SquareState_Empty]){
+                // temporarily store perfectChoice here. will either be replaced or will be correct value
+                perfectChoice = 3*y+x;
+                
+                // populate moves array with possible move at x,y
+                [moves addObject:[NSNumber numberWithInt:3*y+x]];
+                tempBoard[3*y+x] = [NSNumber numberWithInt:SquareState_X];
+                
+                // populate score array with minimax score from possible move at x,y
+                score = [self miniMaxScoreForBoard:tempBoard andPlayer:PlayerTurn_X];
+                [scores addObject:[NSNumber numberWithInt:score]];
+                
+                // revert tempBoard back
+                tempBoard[3*y+x] = [NSNumber numberWithInt:SquareState_Empty];
+                
+                if (score==10){
+                    return perfectChoice;
+                }
+            }
+        }
+    }
+    return perfectChoice;
+}
 
 @end
