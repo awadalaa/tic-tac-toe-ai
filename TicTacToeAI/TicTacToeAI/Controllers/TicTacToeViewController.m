@@ -19,9 +19,13 @@
 #define SquareWidth self.view.frame.size.width/3.0f
 #define SquarePadding self.view.frame.size.width/30.0f
 
-@interface TicTacToeViewController ()
+@interface TicTacToeViewController (){
+    UISegmentedControl *segmentedControl;
+}
+
 @property(nonatomic,strong)NSMutableArray *squareButtons;
 @property(nonatomic,strong)TicTacToeBoardView *uiboard;
+
 
 @property(nonatomic,strong)Game *game;
 @end
@@ -35,6 +39,46 @@
     [super viewDidLoad];
     self.game = [[Game alloc] init];
     [self initializeBoard];
+    [self configureSegmentedControl];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [segmentedControl removeFromSuperview];
+}
+
+
+
+#pragma mark - UISegmentControl
+
+
+-(void)configureSegmentedControl{
+    // Add a UIToolbar to bottom
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-44, self.view.frame.size.width, 44)];
+    toolbar.barStyle = UIBarStyleDefault;
+    [self.view addSubview:toolbar];
+    
+    // Add a UISegmentControl
+    NSArray *segItemsArray = [NSArray arrayWithObjects: @"1 Player", @"2 Player",@"Reset Game", nil];
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:segItemsArray];
+    
+    segmentedControl.frame = CGRectMake(0, 0, 200, 30);
+    segmentedControl.selectedSegmentIndex = 1;
+    [segmentedControl addTarget:self action:@selector(changeSegment:)
+               forControlEvents:UIControlEventValueChanged];
+    UIBarButtonItem *segmentedControlButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)segmentedControl];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *barArray = [NSArray arrayWithObjects: flexibleSpace, segmentedControlButtonItem, flexibleSpace, nil];
+    [toolbar setItems:barArray];
+}
+
+
+-(void)changeSegment:(id)sender{
+    NSLog(@"%ld",(long)segmentedControl.selectedSegmentIndex);
+    if ((long)segmentedControl.selectedSegmentIndex==2){
+        [self resetGame];
+    }
 }
 
 -(void)initializeBoard{
@@ -70,7 +114,6 @@
 }
 
 -(void)squarePressedForSquareButton:(id)squareBtn{
-    
     SquareButton *squareButton = squareBtn;
     if (self.game.playerTurn == PlayerTurn_X){
         XView *xView = [[XView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
@@ -110,7 +153,9 @@
     for (int i=0; i<9;i++)
         self.game.board[i] = [NSNumber numberWithInt:SquareState_Empty];
     [[self.uiboard subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self initializeSquareButtons];
     self.game.playerTurn = PlayerTurn_X;
+    segmentedControl.selectedSegmentIndex=1;
 }
 
 -(void)winnerIsPlayer:(PlayerTurn)player{
@@ -118,7 +163,7 @@
     for (UIButton *squareButton in [self.uiboard subviews]){
         [squareButton setEnabled:NO];
     }
-    UILabel *winnerlabel = [[UILabel alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height-40.0f,self.view.frame.size.width,40.0f)];
+    UILabel *winnerlabel = [[UILabel alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height-40.0f-44.0f/*toolbarheight*/,self.view.frame.size.width,40.0f)];
     winnerlabel.textAlignment = NSTextAlignmentCenter;
     winnerlabel.font = [UIFont fontWithName:@"Helvetica" size:30.0f];
     if (player==PlayerTurn_X){
