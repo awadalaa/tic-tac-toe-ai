@@ -28,6 +28,41 @@
 	return self;
 }
 
+#pragma mark - scoring methods
+-(int)scoreForPlayer:(PlayerTurn)player{
+    /*
+     Scoring: represent each square in the 3x3 tic tac toe grid as a 9-bit value where each bit=1 represents square occupied. add the winning squares to get values in winningScores array, which holds all the 9bit values that are tic-tac-toe winners.
+     
+     *     273                 84
+     *        \               /
+     *          1 |   2 |   4  = 7
+     *       -----+-----+-----
+     *          8 |  16 |  32  = 56
+     *       -----+-----+-----
+     *         64 | 128 | 256  = 448
+     *       =================
+     *         73   146   292
+     */
+    
+    int score = 0;
+    int squareVal = 0;
+    
+    // scoring for which player?
+    int playerSquare = SquareState_X;
+    if (player==PlayerTurn_O)
+        playerSquare = SquareState_O;
+    
+    for(int y=0;y<3;y++){
+        for(int x=0;x<3;x++){
+            squareVal = pow(2,(3*y+x)); // 3y+x gives us value between 0-8. raise 2 to this power to get 9bit squareVal
+            if (self.board[3*y+x]==[NSNumber numberWithInt:playerSquare])
+                score+=squareVal;
+        }
+    }
+    return score;
+    
+}
+
 
 -(int)scoreForBoard:(NSArray *)board andPlayer:(PlayerTurn)player{
     /*
@@ -63,7 +98,6 @@
     
 }
 
-
 -(BOOL)isWinForScore:(int)score{
     /*
      To tell if X wins, we pass in the 9bit value representing the X boards score (see scoreForBoard:andPlayer: comment).  Then logical AND with each of the winningScores. If result == winning score, we have a winner.
@@ -77,10 +111,53 @@
 }
 
 
+#pragma mark - minimax algorithm
+-(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player{
+    
+    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
+        //NSLog(@"For Player X final board is worth:@%d",[self evaluateMiniMaxForBoard:board andPlayer:PlayerTurn_X]);
+        return [self evaluateMiniMaxForBoard:board andPlayer:PlayerTurn_X];
+    }
 
-/** MiniMax Algorithm **/
+    int perfectChoice = -1;
+    int score = -10;
 
--(int)miniMaxScoreForBoard:(NSArray *)board andPlayer:(PlayerTurn)player{
+    NSArray *moves = [self movesAvailableInBoard:board];
+    id enumerator = [moves objectEnumerator];
+    id m;
+    while (m = [enumerator nextObject]) {
+        /* code to act on each element in available moves array */
+        int move = [m intValue];
+        //NSLog(@"move %d for player %@",(int)move, player==PlayerTurn_X?@"X":@"O");
+
+        NSMutableArray *newboard = [board mutableCopy];
+        newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
+        //NSLog(@"newboard %@",newboard);
+        
+        int nextGameScore = -[self minimaxWithGameBoard:newboard forPlayer:!player];
+        if (nextGameScore > score) {
+            perfectChoice = move;
+            score = nextGameScore;
+        }
+    }
+    return (int)perfectChoice;
+}
+
+
+
+-(NSArray *)movesAvailableInBoard:(NSArray *)board{
+    NSMutableArray *moves = [[NSMutableArray alloc] initWithCapacity:10];
+    for (int y=0;y<3;y++){
+        for (int x=0;x<3;x++){
+            if (board[3*y+x]==[NSNumber numberWithInt:SquareState_Empty]){
+                [moves addObject:[NSNumber numberWithInt:3*y+x]];
+            }
+        }
+    }
+    return [moves copy];
+}
+
+-(int)evaluateMiniMaxForBoard:board andPlayer:(PlayerTurn)player{
     if (player==PlayerTurn_X && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
         return 10;
     }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
@@ -90,48 +167,22 @@
     }
 }
 
+#pragma mark - NSCopying protocol
 
--(int)miniMaxForCurrentBoard:(NSArray *)currentBoard andCurrentPlayer:(PlayerTurn)player{
+- (id)copyWithZone:(NSZone *)zone
+{
+    id copy = [[[self class] alloc] init];
     
-    int perfectChoice=-1;
-    // if someone has already won, just return
-    int score = -1;
-    score =[self miniMaxScoreForBoard:currentBoard andPlayer:player];
-    if (score!=0) return perfectChoice;
-    
-    
-    
-    NSMutableArray *scores = [[NSMutableArray alloc] init];
-    NSMutableArray *moves = [[NSMutableArray alloc] init];
-    NSMutableArray *tempBoard = [NSMutableArray arrayWithArray:[currentBoard copy]];
-    PlayerTurn      tempPlayer = player;
-    
-    // get all available moves
-    // 1 deep lookup
-    for (int y=0;y<3;y++){
-        for (int x=0;x<3;x++){
-            if (currentBoard[3*y+x]==[NSNumber numberWithInt:SquareState_Empty]){
-                // temporarily store perfectChoice here. will either be replaced or will be correct value
-                perfectChoice = 3*y+x;
-                
-                // populate moves array with possible move at x,y
-                [moves addObject:[NSNumber numberWithInt:3*y+x]];
-                tempBoard[3*y+x] = [NSNumber numberWithInt:SquareState_X];
-                
-                // populate score array with minimax score from possible move at x,y
-                score = [self miniMaxScoreForBoard:tempBoard andPlayer:PlayerTurn_X];
-                [scores addObject:[NSNumber numberWithInt:score]];
-                
-                // revert tempBoard back
-                tempBoard[3*y+x] = [NSNumber numberWithInt:SquareState_Empty];
-                
-                if (score==10){
-                    return perfectChoice;
-                }
-            }
-        }
+    if (copy)
+    {
+        // Copy NSObject subclasses
+        [copy setBoard:[self.board copyWithZone:zone]];
+        
+        // Set primitives
+        [copy setGameState:self.gameState];
+        [copy setPlayerTurn:self.playerTurn];
     }
-    return perfectChoice;
+    
+    return copy;
 }
-
 @end

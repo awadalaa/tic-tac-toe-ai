@@ -7,7 +7,6 @@
 //
 
 #import "TicTacToeViewController.h"
-
 #import "Game.h"
 
 #import "TicTacToeBoardView.h"
@@ -15,17 +14,18 @@
 #import "OView.h"
 #import "SquareButton.h"
 
-
 #define SquareWidth self.view.frame.size.width/3.0f
 #define SquarePadding self.view.frame.size.width/30.0f
 
 @interface TicTacToeViewController (){
     UISegmentedControl *segmentedControl;
     UILabel *winnerlabel;
+    UIActivityIndicatorView *spinner;
 }
 
 @property(nonatomic,strong)NSMutableArray *squareButtons;
 @property(nonatomic,strong)TicTacToeBoardView *uiboard;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 
 @property(nonatomic,strong)Game *game;
@@ -36,7 +36,6 @@
 
 - (void)viewDidLoad
 {
-
     [super viewDidLoad];
     self.game = [[Game alloc] init];
     [self initializeBoard];
@@ -45,11 +44,26 @@
     winnerlabel.textAlignment = NSTextAlignmentCenter;
     winnerlabel.font = [UIFont fontWithName:@"Helvetica" size:30.0f];
     [self.view addSubview:winnerlabel];
-    
+    [self loadSpinner];
     if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
-        [self AI_PlayMove];
+        [self performAI_Algorithm];
     }
     
+}
+
+- (void) performAI_Algorithm
+{
+    [self.activityIndicator startAnimating]; //Or whatever UI Change you need to make
+    [self performSelector: @selector(AI_PlayMove)
+               withObject: nil
+               afterDelay: 0];
+    return;
+}
+
+-(void)loadSpinner {
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.view addSubview:self.activityIndicator];
+    self.activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -106,7 +120,7 @@
     segmentedControl = [[UISegmentedControl alloc] initWithItems:segItemsArray];
     
     segmentedControl.frame = CGRectMake(0, 0, 200, 30);
-    segmentedControl.selectedSegmentIndex = 0;
+    segmentedControl.selectedSegmentIndex = 1;
     [segmentedControl addTarget:self action:@selector(changeSegment:)
                forControlEvents:UIControlEventValueChanged];
     UIBarButtonItem *segmentedControlButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)segmentedControl];
@@ -122,14 +136,20 @@
     
     if (index==0 && self.game.playerTurn==PlayerTurn_X){
         // if changed to AI in the middle of X move, AI should play
-        [self AI_PlayMove];
+        [self performAI_Algorithm];
     }
+    
+    if (index==1 && self.game.playerTurn==PlayerTurn_X){
+        //int choice = [self.game minimaxWithGameState:self.game.board forPlayer:self.game.playerTurn];
+        //[self squareIdSelected:choice];
+    }
+    
     if (index==2){
         [self resetGame];
         
         // after reset if 0 selected, AI should move
         if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
-            [self AI_PlayMove];
+            [self performAI_Algorithm];
         }
 
     }
@@ -148,9 +168,9 @@
     NSLog(@"square pressed %d",squareButton.squareId);
     [self squareIdSelected:squareButton.squareId];
     
-    if (!self.game.isWon){
+    if (self.game.gameState != GameState_Ended){
         if (self.game.playerTurn==PlayerTurn_X && segmentedControl.selectedSegmentIndex==0 /* AI turned on */){
-            [self AI_PlayMove];
+            [self performAI_Algorithm];
         }
     }
     
@@ -161,7 +181,10 @@
     if (self.game.playerTurn == PlayerTurn_X){
         XView *xView = [[XView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
         [self.squareButtons[squareId] addSubview:xView];
-        self.game.board[squareId] = [NSNumber numberWithInt:SquareState_X];
+        NSMutableArray *tempArr = [[NSMutableArray alloc] initWithArray:[self.game.board mutableCopy]];
+//        tempArr = [self.game.board mutableCopy];
+        tempArr[squareId] =[NSNumber numberWithInt:SquareState_X];
+        self.game.board = tempArr;
     }else{
         OView *oView = [[OView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
         [self.squareButtons[squareId] addSubview:oView];
@@ -179,19 +202,21 @@
 }
 
 -(void)AI_PlayMove{
-    int choice = [self.game miniMaxForCurrentBoard:self.game.board andCurrentPlayer:self.game.playerTurn];
+    int choice = [self.game minimaxWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
+    [self.activityIndicator stopAnimating];
     [self squareIdSelected:choice];
+
 }
 
 
 
 
 -(void)evaluateBoardForWins{
-    int score = [self.game scoreForBoard:self.game.board andPlayer:self.game.playerTurn];
+    int score = [self.game scoreForPlayer:self.game.playerTurn];
     NSLog(@"score of game is %d",score);    
     if ([self.game isWinForScore:score]){
         NSLog(@"winner!!!");
-        self.game.isWon = YES;
+        self.game.gameState = GameState_Ended;
         [self winnerIsPlayer:self.game.playerTurn];
     }else{
         NSLog(@"no win");
@@ -205,9 +230,9 @@
     [[self.uiboard subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self initializeSquareButtons];
     self.game.playerTurn = PlayerTurn_X;
-    segmentedControl.selectedSegmentIndex=0;
+    segmentedControl.selectedSegmentIndex=1;
     winnerlabel.text = @"";
-    self.game.isWon=nil;
+    self.game.gameState = GameState_Active;
 }
 
 
