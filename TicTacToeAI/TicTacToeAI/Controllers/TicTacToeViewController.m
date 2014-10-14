@@ -203,8 +203,10 @@
 
 -(void)AI_PlayMove{
     int choice = [self.game minimaxWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
+    // after this step, perfect choice will be calculated
+    
     [self.activityIndicator stopAnimating];
-    [self squareIdSelected:choice];
+    [self squareIdSelected:self.game.perfectChoice];
 
 }
 

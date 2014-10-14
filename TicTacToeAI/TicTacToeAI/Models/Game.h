@@ -36,7 +36,15 @@ GameState;
 
 @property (nonatomic,assign) PlayerTurn playerTurn;
 @property (nonatomic,assign) GameState gameState;
-@property (nonatomic,strong) NSMutableArray *board; // 3 x 3 array of SquareStates representing the board   
+
+@property (nonatomic,assign) int counts;
+@property (nonatomic,assign) int perfectChoice;
+
+@property (nonatomic,assign) int perfectChoiceX;
+
+@property (nonatomic,strong) NSDictionary *level_scores;// key is level, value is scores array
+
+@property (nonatomic,strong) NSMutableArray *board; // 3 x 3 array of SquareStates representing the board
 
 -(int)scoreForPlayer:(PlayerTurn)player;
 -(BOOL)isWinForScore:(int)score;

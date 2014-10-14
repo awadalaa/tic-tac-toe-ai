@@ -16,6 +16,7 @@
 	if ((self = [super init]))
 	{
         // initialize 3x3 board with empty states
+        _perfectChoice=0;
 		self.board = [[NSMutableArray alloc] initWithCapacity:9];
         for (int y=0;y<3;y++){
             for (int x=0;x<3;x++){
@@ -114,14 +115,12 @@
 #pragma mark - minimax algorithm
 -(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player{
     
-    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
-        //NSLog(@"For Player X final board is worth:@%d",[self evaluateMiniMaxForBoard:board andPlayer:PlayerTurn_X]);
+    // if game is over in current board position return minimax score
+    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]] || [self isWinForScore:[self scoreForBoard:board andPlayer:!player]]){
         return [self evaluateMiniMaxForBoard:board andPlayer:PlayerTurn_X];
     }
-
-    int perfectChoice = -1;
+    
     int score = -10;
-
     NSArray *moves = [self movesAvailableInBoard:board];
     id enumerator = [moves objectEnumerator];
     id m;
@@ -135,12 +134,23 @@
         //NSLog(@"newboard %@",newboard);
         
         int nextGameScore = -[self minimaxWithGameBoard:newboard forPlayer:!player];
-        if (nextGameScore > score) {
+        if(!player && nextGameScore > score){ // x turn
+            _perfectChoice = move;
+            score = nextGameScore;
+        }else if (player && nextGameScore < score){
+            _perfectChoice = move;
+            score = nextGameScore;
+        }
+        /*if (!player && nextGameScore > score){
             perfectChoice = move;
             score = nextGameScore;
         }
+        else if (player && nextGameScore < score){
+            perfectChoice = move;
+            score = nextGameScore;
+        }*/
     }
-    return (int)perfectChoice;
+    return (int)score;
 }
 
 
@@ -159,9 +169,9 @@
 
 -(int)evaluateMiniMaxForBoard:board andPlayer:(PlayerTurn)player{
     if (player==PlayerTurn_X && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
-        return 10;
-    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
         return -10;
+    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
+        return 10;
     }else{
         return 0;
     }
