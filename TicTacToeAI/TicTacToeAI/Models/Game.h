@@ -39,7 +39,6 @@ GameState;
 
 @property (nonatomic,assign) int counts;
 @property (nonatomic,assign) int perfectChoice;
-
 @property (nonatomic,assign) int perfectChoiceX;
 
 @property (nonatomic,strong) NSDictionary *level_scores;// key is level, value is scores array

@@ -8,6 +8,7 @@
 
 #import "Game.h"
 #define winningScores @[@7, @56, @448, @73, @146, @292, @273, @84]
+#define twoRowScores @[@7, @56, @448, @73, @146, @292, @273, @84]
 @implementation Game
 
 
@@ -17,6 +18,7 @@
 	{
         // initialize 3x3 board with empty states
         _perfectChoice=0;
+        
 		self.board = [[NSMutableArray alloc] initWithCapacity:9];
         for (int y=0;y<3;y++){
             for (int x=0;x<3;x++){
@@ -111,44 +113,42 @@
     return NO;
 }
 
+-(BOOL)isGameOver:(NSArray *)board{
+    for (int i = 0; i<9; i++) {
+        if (board[i]==[NSNumber numberWithInt:SquareState_Empty])
+            return NO;
+    }
+    return YES;
+}
+
 
 #pragma mark - minimax algorithm
 -(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player{
     
     // if game is over in current board position return minimax score
-    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]] || [self isWinForScore:[self scoreForBoard:board andPlayer:!player]]){
-        return [self evaluateMiniMaxForBoard:board andPlayer:PlayerTurn_X];
+    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]] || [self isWinForScore:[self scoreForBoard:board andPlayer:!player]] || [self isGameOver:board]){
+        return [self evaluateMiniMaxForBoard:board andPlayer:player];
     }
-    
-    int score = -10;
+    int score=-10;
     NSArray *moves = [self movesAvailableInBoard:board];
     id enumerator = [moves objectEnumerator];
     id m;
     while (m = [enumerator nextObject]) {
         /* code to act on each element in available moves array */
         int move = [m intValue];
-        //NSLog(@"move %d for player %@",(int)move, player==PlayerTurn_X?@"X":@"O");
 
         NSMutableArray *newboard = [board mutableCopy];
         newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
-        //NSLog(@"newboard %@",newboard);
         
-        int nextGameScore = -[self minimaxWithGameBoard:newboard forPlayer:!player];
-        if(!player && nextGameScore > score){ // x turn
+        int nextGameScore = [self minimaxWithGameBoard:newboard forPlayer:!player];
+        
+        if(player==PlayerTurn_X && nextGameScore > score){ // x turn
             _perfectChoice = move;
             score = nextGameScore;
-        }else if (player && nextGameScore < score){
+        }else if (player==PlayerTurn_O && nextGameScore < score){
             _perfectChoice = move;
             score = nextGameScore;
         }
-        /*if (!player && nextGameScore > score){
-            perfectChoice = move;
-            score = nextGameScore;
-        }
-        else if (player && nextGameScore < score){
-            perfectChoice = move;
-            score = nextGameScore;
-        }*/
     }
     return (int)score;
 }
@@ -169,9 +169,9 @@
 
 -(int)evaluateMiniMaxForBoard:board andPlayer:(PlayerTurn)player{
     if (player==PlayerTurn_X && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
-        return -10;
-    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
         return 10;
+    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
+        return -10;
     }else{
         return 0;
     }

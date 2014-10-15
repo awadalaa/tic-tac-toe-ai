@@ -25,6 +25,7 @@
 		685DC8DD19EA1228001797B4 /* OView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DC19EA1228001797B4 /* OView.m */; };
 		685DC8E019EA25EA001797B4 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DF19EA25EA001797B4 /* Game.m */; };
 		685DC8E319EAB574001797B4 /* SquareButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8E219EAB574001797B4 /* SquareButton.m */; };
+		687A9EC119EDD0B300BD8E5D /* Best.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A9EC019EDD0B300BD8E5D /* Best.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,8 @@
 		685DC8DF19EA25EA001797B4 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Game.m; path = Models/Game.m; sourceTree = "<group>"; };
 		685DC8E119EAB574001797B4 /* SquareButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SquareButton.h; path = Views/SquareButton.h; sourceTree = "<group>"; };
 		685DC8E219EAB574001797B4 /* SquareButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SquareButton.m; path = Views/SquareButton.m; sourceTree = "<group>"; };
+		687A9EBF19EDD0B300BD8E5D /* Best.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Best.h; path = Models/Best.h; sourceTree = "<group>"; };
+		687A9EC019EDD0B300BD8E5D /* Best.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Best.m; path = Models/Best.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +197,8 @@
 			children = (
 				685DC8DE19EA25EA001797B4 /* Game.h */,
 				685DC8DF19EA25EA001797B4 /* Game.m */,
+				687A9EBF19EDD0B300BD8E5D /* Best.h */,
+				687A9EC019EDD0B300BD8E5D /* Best.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -296,6 +301,7 @@
 				685DC8DD19EA1228001797B4 /* OView.m in Sources */,
 				685DC8AE19EA063E001797B4 /* AppDelegate.m in Sources */,
 				685DC8DA19EA121C001797B4 /* XView.m in Sources */,
+				687A9EC119EDD0B300BD8E5D /* Best.m in Sources */,
 				685DC8CE19EA06BD001797B4 /* TicTacToeBoardView.m in Sources */,
 				685DC8AA19EA063E001797B4 /* main.m in Sources */,
 				685DC8E019EA25EA001797B4 /* Game.m in Sources */,
