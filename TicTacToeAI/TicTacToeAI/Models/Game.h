@@ -38,8 +38,6 @@ GameState;
 @property (nonatomic,assign) GameState gameState;
 
 @property (nonatomic,assign) int counts;
-@property (nonatomic,assign) int perfectChoice;
-@property (nonatomic,assign) int perfectChoiceX;
 
 @property (nonatomic,strong) NSDictionary *level_scores;// key is level, value is scores array
 
@@ -48,5 +46,6 @@ GameState;
 -(int)scoreForPlayer:(PlayerTurn)player;
 -(BOOL)isWinForScore:(int)score;
 //-(int)miniMaxForCurrentBoard:(NSArray *)currentBoard andCurrentPlayer:(PlayerTurn)player;
+-(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player;
 -(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player;
 @end

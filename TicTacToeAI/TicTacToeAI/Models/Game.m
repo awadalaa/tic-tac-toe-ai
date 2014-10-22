@@ -8,7 +8,6 @@
 
 #import "Game.h"
 #define winningScores @[@7, @56, @448, @73, @146, @292, @273, @84]
-#define twoRowScores @[@7, @56, @448, @73, @146, @292, @273, @84]
 @implementation Game
 
 
@@ -17,8 +16,6 @@
 	if ((self = [super init]))
 	{
         // initialize 3x3 board with empty states
-        _perfectChoice=0;
-        
 		self.board = [[NSMutableArray alloc] initWithCapacity:9];
         for (int y=0;y<3;y++){
             for (int x=0;x<3;x++){
@@ -122,37 +119,50 @@
 }
 
 
+
 #pragma mark - minimax algorithm
--(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player{
-    
-    // if game is over in current board position return minimax score
+
+
+-(int)minimaxWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player{
     if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]] || [self isWinForScore:[self scoreForBoard:board andPlayer:!player]] || [self isGameOver:board]){
         return [self evaluateMiniMaxForBoard:board andPlayer:player];
     }
+    
     int score=-10;
     NSArray *moves = [self movesAvailableInBoard:board];
     id enumerator = [moves objectEnumerator];
     id m;
     while (m = [enumerator nextObject]) {
-        /* code to act on each element in available moves array */
         int move = [m intValue];
+        NSMutableArray *newboard = [board mutableCopy];
+        newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
+        int sc = -[self minimaxWithGameBoard:newboard forPlayer:!player];
+        if (sc > score)
+            score = sc;
+    }
+    return score;
+}
 
+
+-(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player{
+    id bestmove = nil;
+    int score=-10;
+    NSArray *moves = [self movesAvailableInBoard:board];
+    id enumerator = [moves objectEnumerator];
+    id m;
+    while (m = [enumerator nextObject]) {
+        int move = [m intValue];
         NSMutableArray *newboard = [board mutableCopy];
         newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
         
-        int nextGameScore = [self minimaxWithGameBoard:newboard forPlayer:!player];
-        
-        if(player==PlayerTurn_X && nextGameScore > score){ // x turn
-            _perfectChoice = move;
-            score = nextGameScore;
-        }else if (player==PlayerTurn_O && nextGameScore < score){
-            _perfectChoice = move;
-            score = nextGameScore;
+        int sc = -[self minimaxWithGameBoard:newboard forPlayer:!player];
+        if (sc > score){
+            score = sc;
+            bestmove=m;
         }
     }
-    return (int)score;
+    return [bestmove intValue];
 }
-
 
 
 -(NSArray *)movesAvailableInBoard:(NSArray *)board{
@@ -168,13 +178,25 @@
 }
 
 -(int)evaluateMiniMaxForBoard:board andPlayer:(PlayerTurn)player{
-    if (player==PlayerTurn_X && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
-        return 10;
-    }else if (player==PlayerTurn_O && [self isWinForScore:[self scoreForBoard:board andPlayer:player]]){
-        return -10;
+    if (player==PlayerTurn_X){
+        if ([self isWinForScore:[self scoreForBoard:board andPlayer:PlayerTurn_X]]){
+            return 10;
+        }else if ([self isWinForScore:[self scoreForBoard:board andPlayer:PlayerTurn_O]]){
+            return -10;
+        }else{
+            return 0;
+        }
     }else{
-        return 0;
+        if ([self isWinForScore:[self scoreForBoard:board andPlayer:PlayerTurn_O]]){
+            return 10;
+        }else if ([self isWinForScore:[self scoreForBoard:board andPlayer:PlayerTurn_X]]){
+            return -10;
+        }else{
+            return 0;
+        }
     }
+    
+    
 }
 
 #pragma mark - NSCopying protocol
