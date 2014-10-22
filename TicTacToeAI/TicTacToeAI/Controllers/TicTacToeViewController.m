@@ -89,7 +89,6 @@
      * Add 9 square buttons to the board. On Touch Up it will call selector squarePressedForSquare:
      * we can get the squareId from there.
      */
-    
     self.squareButtons = [[NSMutableArray alloc] initWithCapacity:9];
     
     for (int y=0;y<3;y++){
@@ -131,7 +130,6 @@
 
 
 -(void)changeSegment:(id)sender{
-    NSLog(@"%ld",(long)segmentedControl.selectedSegmentIndex);
     long index = (long)segmentedControl.selectedSegmentIndex;
     
     if (index==0 && self.game.playerTurn==PlayerTurn_X){
@@ -151,7 +149,6 @@
         if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
             [self performAI_Algorithm];
         }
-
     }
 }
 
@@ -160,12 +157,17 @@
 #pragma mark - Square Pressed Logic
 
 -(void)squarePressedForSquareButton:(id)squareBtn{
+
+    SquareButton *squareButton = squareBtn;
+    
     if (self.game.playerTurn==PlayerTurn_X && segmentedControl.selectedSegmentIndex==0 /* AI turned on */){
         return; // not your turn. AI is player X
     }
     
-    SquareButton *squareButton = squareBtn;
-    NSLog(@"square pressed %d",squareButton.squareId);
+    if ([self.game.board[squareButton.squareId] intValue]!=0){
+        return; // that square is already taken
+    }
+    
     [self squareIdSelected:squareButton.squareId];
     
     if (self.game.gameState != GameState_Ended){
@@ -182,7 +184,6 @@
         XView *xView = [[XView alloc] initWithFrame:CGRectMake(SquarePadding,SquarePadding,SquareWidth-2*SquarePadding,SquareWidth-2*SquarePadding)];
         [self.squareButtons[squareId] addSubview:xView];
         NSMutableArray *tempArr = [[NSMutableArray alloc] initWithArray:[self.game.board mutableCopy]];
-//        tempArr = [self.game.board mutableCopy];
         tempArr[squareId] =[NSNumber numberWithInt:SquareState_X];
         self.game.board = tempArr;
     }else{
@@ -202,12 +203,10 @@
 }
 
 -(void)AI_PlayMove{
-    int choice = [self.game minimaxRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
     // after this step, perfect choice will be calculated
-    
+    int choice = [self.game minimaxRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
     [self.activityIndicator stopAnimating];
     [self squareIdSelected:choice];
-
 }
 
 
@@ -215,13 +214,12 @@
 
 -(void)evaluateBoardForWins{
     int score = [self.game scoreForPlayer:self.game.playerTurn];
-    NSLog(@"score of game is %d",score);    
     if ([self.game isWinForScore:score]){
-        NSLog(@"winner!!!");
         self.game.gameState = GameState_Ended;
         [self winnerIsPlayer:self.game.playerTurn];
-    }else{
-        NSLog(@"no win");
+    }else if([self.game isGameOver:self.game.board]){
+        [self gameIsDraw];
+        self.game.gameState = GameState_Ended;
     }
 }
 
@@ -249,6 +247,14 @@
     }else{
         winnerlabel.text = @"O wins!";
     }
+}
+
+-(void)gameIsDraw{
+    // disable other squares show winner
+    for (UIButton *squareButton in [self.uiboard subviews]){
+        [squareButton setEnabled:NO];
+    }
+    winnerlabel.text=@"It's a Draw!";
 }
 
 

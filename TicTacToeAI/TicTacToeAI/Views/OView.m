@@ -25,7 +25,7 @@
     // Setting up the line width, type and color
     CGContextSetStrokeColorWithColor(context, [UIColor blueColor].CGColor);
     CGContextSetLineCap(context, kCGLineCapRound);
-    CGContextSetLineWidth(context, 0.5);
+    CGContextSetLineWidth(context, 1);
     
     CGContextAddEllipseInRect(context, rect);
     

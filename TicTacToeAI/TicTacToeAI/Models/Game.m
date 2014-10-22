@@ -118,6 +118,15 @@
     return YES;
 }
 
+-(BOOL) isItFirstMoveForBoard:(NSArray *)board{
+    BOOL empty=YES;
+    for (int y=0;y<3;y++){
+        for (int x=0;x<3;x++){
+            if (board[x+3*y] != [NSNumber numberWithInt: SquareState_Empty]) empty=NO;
+        }
+    }
+    return empty;
+}
 
 
 #pragma mark - minimax algorithm
@@ -145,6 +154,12 @@
 
 
 -(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player{
+    
+    if ([self isItFirstMoveForBoard:board]){
+        // if it is first move of the game just pick a random square. otherwise it will always choose the top left
+        return arc4random() % 9; // random between 0 and 9
+    }
+    
     id bestmove = nil;
     int score=-10;
     NSArray *moves = [self movesAvailableInBoard:board];

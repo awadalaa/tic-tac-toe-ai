@@ -45,7 +45,7 @@ GameState;
 
 -(int)scoreForPlayer:(PlayerTurn)player;
 -(BOOL)isWinForScore:(int)score;
-//-(int)miniMaxForCurrentBoard:(NSArray *)currentBoard andCurrentPlayer:(PlayerTurn)player;
+-(BOOL)isGameOver:(NSArray *)board;
 -(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player;
 -(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player;
 @end
