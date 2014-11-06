@@ -8,7 +8,7 @@
 
 #import "TicTacToeViewController.h"
 #import "Game.h"
-
+#import "GameAI.h"
 #import "TicTacToeBoardView.h"
 #import "XView.h"
 #import "OView.h"
@@ -29,6 +29,7 @@
 
 
 @property(nonatomic,strong)Game *game;
+@property(nonatomic,strong)GameAI *gameAI;
 @end
 
 @implementation TicTacToeViewController
@@ -38,6 +39,8 @@
 {
     [super viewDidLoad];
     self.game = [[Game alloc] init];
+    
+    self.gameAI = [[GameAI alloc] initWithGame:self.game];
     [self initializeBoard];
     [self configureSegmentedControl];
     winnerlabel = [[UILabel alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height-40.0f-44.0f/*toolbarheight*/,self.view.frame.size.width,40.0f)];
@@ -204,7 +207,7 @@
 
 -(void)AI_PlayMove{
     // after this step, perfect choice will be calculated
-    int choice = [self.game minimaxRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
+    int choice = [self.gameAI minimaxRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
     [self.activityIndicator stopAnimating];
     [self squareIdSelected:choice];
 }
@@ -213,11 +216,11 @@
 
 
 -(void)evaluateBoardForWins{
-    int score = [self.game scoreForPlayer:self.game.playerTurn];
-    if ([self.game isWinForScore:score]){
+    int score = [self.gameAI scoreForPlayer:self.game.playerTurn];
+    if ([self.gameAI isWinForScore:score]){
         self.game.gameState = GameState_Ended;
         [self winnerIsPlayer:self.game.playerTurn];
-    }else if([self.game isGameOver:self.game.board]){
+    }else if([self.gameAI isGameOver:self.game.board]){
         [self gameIsDraw];
         self.game.gameState = GameState_Ended;
     }

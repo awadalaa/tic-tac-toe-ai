@@ -25,13 +25,12 @@
     // Setting up the line width, type and color
     CGContextSetStrokeColorWithColor(context, [UIColor blueColor].CGColor);
     CGContextSetLineCap(context, kCGLineCapRound);
-    CGContextSetLineWidth(context, 1);
+    CGContextSetLineWidth(context, 0.5);
     
     CGContextAddEllipseInRect(context, rect);
     
     // Stroke and fill
     CGContextStrokePath(context);
-    CGContextFillPath(context);
 }
 
 @end

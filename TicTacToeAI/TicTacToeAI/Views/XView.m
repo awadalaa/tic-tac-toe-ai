@@ -27,7 +27,7 @@
     // Setting up the line width, type and color
     CGContextSetStrokeColorWithColor(context, [UIColor redColor].CGColor);
     CGContextSetLineCap(context, kCGLineCapRound);
-    CGContextSetLineWidth(context, 1);
+    CGContextSetLineWidth(context, 0.5);
     
     // Horizontal Lines
     CGContextMoveToPoint(context, 0, 0);

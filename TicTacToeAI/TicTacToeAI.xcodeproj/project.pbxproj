@@ -25,6 +25,7 @@
 		685DC8DD19EA1228001797B4 /* OView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DC19EA1228001797B4 /* OView.m */; };
 		685DC8E019EA25EA001797B4 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8DF19EA25EA001797B4 /* Game.m */; };
 		685DC8E319EAB574001797B4 /* SquareButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 685DC8E219EAB574001797B4 /* SquareButton.m */; };
+		68DCE3781A0B2C450083CCC4 /* GameAI.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCE3771A0B2C450083CCC4 /* GameAI.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,8 @@
 		685DC8DF19EA25EA001797B4 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Game.m; path = Models/Game.m; sourceTree = "<group>"; };
 		685DC8E119EAB574001797B4 /* SquareButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SquareButton.h; path = Views/SquareButton.h; sourceTree = "<group>"; };
 		685DC8E219EAB574001797B4 /* SquareButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SquareButton.m; path = Views/SquareButton.m; sourceTree = "<group>"; };
+		68DCE3761A0B2C450083CCC4 /* GameAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameAI.h; path = Helpers/GameAI.h; sourceTree = "<group>"; };
+		68DCE3771A0B2C450083CCC4 /* GameAI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameAI.m; path = Helpers/GameAI.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +128,7 @@
 		685DC8A319EA063E001797B4 /* TicTacToeAI */ = {
 			isa = PBXGroup;
 			children = (
+				68DCE3751A0B2C170083CCC4 /* Helpers */,
 				685DC8D219EA06D9001797B4 /* Models */,
 				685DC8CF19EA06C6001797B4 /* Views */,
 				685DC8D119EA06D4001797B4 /* Controllers */,
@@ -196,6 +200,15 @@
 				685DC8DF19EA25EA001797B4 /* Game.m */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		68DCE3751A0B2C170083CCC4 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				68DCE3761A0B2C450083CCC4 /* GameAI.h */,
+				68DCE3771A0B2C450083CCC4 /* GameAI.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,6 +309,7 @@
 				685DC8DD19EA1228001797B4 /* OView.m in Sources */,
 				685DC8AE19EA063E001797B4 /* AppDelegate.m in Sources */,
 				685DC8DA19EA121C001797B4 /* XView.m in Sources */,
+				68DCE3781A0B2C450083CCC4 /* GameAI.m in Sources */,
 				685DC8CE19EA06BD001797B4 /* TicTacToeBoardView.m in Sources */,
 				685DC8AA19EA063E001797B4 /* main.m in Sources */,
 				685DC8E019EA25EA001797B4 /* Game.m in Sources */,

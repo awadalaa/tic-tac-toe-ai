@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define winningScores @[@7, @56, @448, @73, @146, @292, @273, @84]
+
 @interface Game : NSObject<NSCopying>
 
 typedef enum
@@ -43,9 +45,4 @@ GameState;
 
 @property (nonatomic,strong) NSMutableArray *board; // 3 x 3 array of SquareStates representing the board
 
--(int)scoreForPlayer:(PlayerTurn)player;
--(BOOL)isWinForScore:(int)score;
--(BOOL)isGameOver:(NSArray *)board;
--(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player;
--(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player;
 @end
