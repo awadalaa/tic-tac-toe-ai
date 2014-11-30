@@ -156,6 +156,71 @@
 }
 
 
+-(int)alphaBetaWithBoard:(NSArray *)board
+                  player:(PlayerTurn)player
+                     ply:(int)ply
+                   alpha:(int)alpha
+                    beta:(int)beta
+{
+    
+    if ([self isWinForScore:[self scoreForBoard:board andPlayer:player]] || [self isWinForScore:[self scoreForBoard:board andPlayer:!player]] || [self isGameOver:board]){
+        return [self evaluateMiniMaxForBoard:board andPlayer:player];
+    }
+    
+    NSArray *moves = [self movesAvailableInBoard:board];
+    id enumerator = [moves objectEnumerator];
+    for (id m; m = [enumerator nextObject]; ) {
+        int move = [m intValue];
+        NSMutableArray *newboard = [board mutableCopy];
+        newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
+        
+        int sc = -[self alphaBetaWithBoard:newboard
+                                    player:!player
+                                       ply:ply-1
+                                     alpha:-beta
+                                      beta:-alpha];
+        if (sc > alpha)
+            alpha = sc;
+        if (alpha >= beta)
+            break;  // prune branch.
+    }
+    NSLog(@"ply:%d alpha:%d",ply,alpha);
+    return alpha;
+}
+
+
+-(int)minimaxAlphaBetaRootWithGameBoard:(NSArray *)board
+                     forPlayer:(PlayerTurn)player
+                           ply:(int)ply
+                         alpha:(int)alpha
+                          beta:(int)beta
+{
+    
+    if ([self isItFirstMoveForBoard:board]){
+        // if it is first move of the game just pick a random square. otherwise it will always choose the top left
+        return arc4random() % 9; // random between 0 and 9
+    }
+    
+    id bestmove = nil;
+    NSArray *moves = [self movesAvailableInBoard:board];
+    id enumerator = [moves objectEnumerator];
+    id m;
+    while (m = [enumerator nextObject] ) {
+        int move = [m intValue];
+        NSMutableArray *newboard = [board mutableCopy];
+        newboard[move]=(player==PlayerTurn_X)?[NSNumber numberWithInt:SquareState_X]:[NSNumber numberWithInt:SquareState_O];
+        
+        int sc = -[self alphaBetaWithBoard:newboard player:!player ply:ply-1 alpha:-beta beta:-alpha];
+        if (sc > alpha)
+            alpha = sc;
+            bestmove=m;
+        if (alpha >= beta)
+            break;  // prune branch.
+    }
+    return [bestmove intValue];
+}
+
+
 -(NSArray *)movesAvailableInBoard:(NSArray *)board{
     NSMutableArray *moves = [[NSMutableArray alloc] initWithCapacity:10];
     for (int y=0;y<3;y++){
@@ -186,8 +251,9 @@
             return 0;
         }
     }
-
+    
 }
+
 
 
 -(BOOL)isGameOver:(NSArray *)board{

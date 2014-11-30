@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		681EE5C91A2A986300804CFA /* UIFont+SystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 681EE5C81A2A986300804CFA /* UIFont+SystemFontOverride.m */; };
+		681EE5CC1A2A987C00804CFA /* PopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 681EE5CB1A2A987C00804CFA /* PopupView.m */; };
+		681EE5CF1A2AA04800804CFA /* PortraitNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 681EE5CE1A2AA04800804CFA /* PortraitNavigationController.m */; };
 		685DC89E19EA063E001797B4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 685DC89D19EA063E001797B4 /* Foundation.framework */; };
 		685DC8A019EA063E001797B4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 685DC89F19EA063E001797B4 /* CoreGraphics.framework */; };
 		685DC8A219EA063E001797B4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 685DC8A119EA063E001797B4 /* UIKit.framework */; };
@@ -39,6 +42,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		681EE5C71A2A986300804CFA /* UIFont+SystemFontOverride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SystemFontOverride.h"; sourceTree = "<group>"; };
+		681EE5C81A2A986300804CFA /* UIFont+SystemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SystemFontOverride.m"; sourceTree = "<group>"; };
+		681EE5CA1A2A987C00804CFA /* PopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopupView.h; sourceTree = "<group>"; };
+		681EE5CB1A2A987C00804CFA /* PopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopupView.m; sourceTree = "<group>"; };
+		681EE5CD1A2AA04800804CFA /* PortraitNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitNavigationController.h; sourceTree = "<group>"; };
+		681EE5CE1A2AA04800804CFA /* PortraitNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitNavigationController.m; sourceTree = "<group>"; };
 		685DC89A19EA063E001797B4 /* TicTacToeAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicTacToeAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		685DC89D19EA063E001797B4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		685DC89F19EA063E001797B4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -172,6 +181,8 @@
 		685DC8CF19EA06C6001797B4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				681EE5CA1A2A987C00804CFA /* PopupView.h */,
+				681EE5CB1A2A987C00804CFA /* PopupView.m */,
 				685DC8CC19EA06BD001797B4 /* TicTacToeBoardView.h */,
 				685DC8CD19EA06BD001797B4 /* TicTacToeBoardView.m */,
 				685DC8D819EA121C001797B4 /* XView.h */,
@@ -187,6 +198,8 @@
 		685DC8D119EA06D4001797B4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				681EE5CD1A2AA04800804CFA /* PortraitNavigationController.h */,
+				681EE5CE1A2AA04800804CFA /* PortraitNavigationController.m */,
 				685DC8D519EA0B96001797B4 /* TicTacToeViewController.h */,
 				685DC8D619EA0B96001797B4 /* TicTacToeViewController.m */,
 			);
@@ -205,6 +218,8 @@
 		68DCE3751A0B2C170083CCC4 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				681EE5C71A2A986300804CFA /* UIFont+SystemFontOverride.h */,
+				681EE5C81A2A986300804CFA /* UIFont+SystemFontOverride.m */,
 				68DCE3761A0B2C450083CCC4 /* GameAI.h */,
 				68DCE3771A0B2C450083CCC4 /* GameAI.m */,
 			);
@@ -308,8 +323,11 @@
 			files = (
 				685DC8DD19EA1228001797B4 /* OView.m in Sources */,
 				685DC8AE19EA063E001797B4 /* AppDelegate.m in Sources */,
+				681EE5CF1A2AA04800804CFA /* PortraitNavigationController.m in Sources */,
+				681EE5C91A2A986300804CFA /* UIFont+SystemFontOverride.m in Sources */,
 				685DC8DA19EA121C001797B4 /* XView.m in Sources */,
 				68DCE3781A0B2C450083CCC4 /* GameAI.m in Sources */,
+				681EE5CC1A2A987C00804CFA /* PopupView.m in Sources */,
 				685DC8CE19EA06BD001797B4 /* TicTacToeBoardView.m in Sources */,
 				685DC8AA19EA063E001797B4 /* main.m in Sources */,
 				685DC8E019EA25EA001797B4 /* Game.m in Sources */,

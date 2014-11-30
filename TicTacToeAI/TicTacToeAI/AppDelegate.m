@@ -8,18 +8,28 @@
 
 #import "AppDelegate.h"
 #import "TicTacToeViewController.h"
+#import "PortraitNavigationController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-
-
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     TicTacToeViewController *viewController = [[TicTacToeViewController alloc] init];
     
-    self.window.rootViewController = viewController;
+    PortraitNavigationController *navController = [[PortraitNavigationController alloc]
+                      initWithRootViewController:viewController];	//The default view to show #ViewController
+    navController.navigationBar.tintColor = [UIColor blackColor];
+    navController.navigationBarHidden = NO;
+    navController.title = @"TIC TAC TOE AI";
+
+    
+    [self.window addSubview:[navController view]];
+    //Show the window
+    [self.window makeKeyAndVisible];
+    // Override point for customization after application launch.
+    
+    self.window.rootViewController = navController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;

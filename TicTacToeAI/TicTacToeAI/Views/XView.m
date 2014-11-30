@@ -24,10 +24,27 @@
     [super drawRect:rect];
     CGContextRef context = UIGraphicsGetCurrentContext();
     
+    
+    //draw red circle
+    
     // Setting up the line width, type and color
     CGContextSetStrokeColorWithColor(context, [UIColor redColor].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor redColor].CGColor);
     CGContextSetLineCap(context, kCGLineCapRound);
     CGContextSetLineWidth(context, 0.5);
+    
+    CGContextAddEllipseInRect(context, rect);
+    
+    // Stroke and fill
+    CGContextFillPath(context);
+    
+    
+    
+    
+    // Setting up the line width, type and color
+    CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+    CGContextSetLineCap(context, kCGLineCapRound);
+    CGContextSetLineWidth(context, 2.5);
     
     // Horizontal Lines
     CGContextMoveToPoint(context, 0, 0);

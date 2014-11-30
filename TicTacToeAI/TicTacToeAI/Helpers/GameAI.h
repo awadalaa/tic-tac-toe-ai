@@ -19,5 +19,9 @@
 -(BOOL)isWinForScore:(int)score;
 -(int)scoreForPlayer:(PlayerTurn)player;
 -(int)minimaxRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player;
+
 -(int)minimaxWithGameBoard:(NSArray *)board forPlayer:(PlayerTurn)player;
+
+-(int)minimaxAlphaBetaRootWithGameBoard:(NSArray *)board  forPlayer:(PlayerTurn)player ply:(int)ply alpha:(int)alpha beta:(int)beta;
+-(int)alphaBetaWithBoard:(NSArray *)board player:(PlayerTurn)player ply:(int)ply alpha:(int)alpha beta:(int)beta;
 @end

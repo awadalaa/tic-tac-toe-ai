@@ -30,7 +30,7 @@
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:119.0/255 green:136.0/255 blue:153.0/255 alpha:1].CGColor);
     CGContextSetLineCap(context, kCGLineCapRound);
-    CGContextSetLineWidth(context, 1);
+    CGContextSetLineWidth(context, 2);
     
     // Horizontal Lines
     CGContextMoveToPoint(context, 0, rect.size.width/3);

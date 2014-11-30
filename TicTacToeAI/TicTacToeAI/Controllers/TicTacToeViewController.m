@@ -13,20 +13,23 @@
 #import "XView.h"
 #import "OView.h"
 #import "SquareButton.h"
+#import "PopupView.h"
 
 #define SquareWidth self.view.frame.size.width/3.0f
 #define SquarePadding self.view.frame.size.width/30.0f
 
 @interface TicTacToeViewController (){
     UISegmentedControl *segmentedControl;
+    long lastIndex;
     UILabel *winnerlabel;
     UIActivityIndicatorView *spinner;
+
 }
 
 @property(nonatomic,strong)NSMutableArray *squareButtons;
 @property(nonatomic,strong)TicTacToeBoardView *uiboard;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-
+@property (nonatomic, strong) PopupView *popupView;
 
 @property(nonatomic,strong)Game *game;
 @property(nonatomic,strong)GameAI *gameAI;
@@ -39,7 +42,7 @@
 {
     [super viewDidLoad];
     self.game = [[Game alloc] init];
-    
+    [self.navigationController.toolbar setTintColor:[UIColor colorWithRed:89/255.0f green:174/255.0f blue:235/255.0f alpha:1.0f]];
     self.gameAI = [[GameAI alloc] initWithGame:self.game];
     [self initializeBoard];
     [self configureSegmentedControl];
@@ -51,7 +54,6 @@
     if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
         [self performAI_Algorithm];
     }
-    
 }
 
 - (void) performAI_Algorithm
@@ -80,7 +82,7 @@
 
 #pragma mark - Initialization
 -(void)initializeBoard{
-    self.uiboard = [[TicTacToeBoardView alloc] initWithFrame:CGRectMake(0,30, self.view.frame.size.width, self.view.frame.size.height)];
+    self.uiboard = [[TicTacToeBoardView alloc] initWithFrame:CGRectMake(0,(self.view.frame.size.height - self.view.frame.size.width)/2, self.view.frame.size.width, self.view.frame.size.height)];
     
     [self.view addSubview:self.uiboard];
     
@@ -121,8 +123,8 @@
     NSArray *segItemsArray = [NSArray arrayWithObjects: @"1 Player", @"2 Player",@"Reset", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:segItemsArray];
     
-    segmentedControl.frame = CGRectMake(0, 0, 200, 30);
-    segmentedControl.selectedSegmentIndex = 1;
+    segmentedControl.frame = CGRectMake(0, 0, self.view.frame.size.width/1.5, 30);
+    //segmentedControl.selectedSegmentIndex = 0;
     [segmentedControl addTarget:self action:@selector(changeSegment:)
                forControlEvents:UIControlEventValueChanged];
     UIBarButtonItem *segmentedControlButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)segmentedControl];
@@ -135,23 +137,31 @@
 -(void)changeSegment:(id)sender{
     long index = (long)segmentedControl.selectedSegmentIndex;
     
-    if (index==0 && self.game.playerTurn==PlayerTurn_X){
-        // if changed to AI in the middle of X move, AI should play
-        [self performAI_Algorithm];
+    if (index==0){
+        lastIndex = index;
+        if(self.game.playerTurn==PlayerTurn_X){
+            // if changed to AI in the middle of X move, AI should play
+           
+            [self performAI_Algorithm];
+        }
     }
     
-    if (index==1 && self.game.playerTurn==PlayerTurn_X){
+    if (index==1){
         //int choice = [self.game minimaxWithGameState:self.game.board forPlayer:self.game.playerTurn];
         //[self squareIdSelected:choice];
+        lastIndex = index;
     }
     
     if (index==2){
+        
         [self resetGame];
         
+        segmentedControl.selectedSegmentIndex =lastIndex;
         // after reset if 0 selected, AI should move
         if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
             [self performAI_Algorithm];
         }
+
     }
 }
 
@@ -208,6 +218,9 @@
 -(void)AI_PlayMove{
     // after this step, perfect choice will be calculated
     int choice = [self.gameAI minimaxRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn];
+    
+    //alpha beta pruning not working yet :(
+    //int choice = [self.gameAI minimaxAlphaBetaRootWithGameBoard:self.game.board forPlayer:self.game.playerTurn ply:9 alpha:-INFINITY beta:INFINITY];
     [self.activityIndicator stopAnimating];
     [self squareIdSelected:choice];
 }
@@ -227,13 +240,15 @@
 }
 
 -(void)resetGame{
+    if (self.popupView)
+        [self.popupView setHidden:YES];
     for (int i=0; i<9;i++)
         self.game.board[i] = [NSNumber numberWithInt:SquareState_Empty];
     
     [[self.uiboard subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self initializeSquareButtons];
     self.game.playerTurn = PlayerTurn_X;
-    segmentedControl.selectedSegmentIndex=1;
+    //segmentedControl.selectedSegmentIndex=1;
     winnerlabel.text = @"";
     self.game.gameState = GameState_Active;
 }
@@ -246,9 +261,12 @@
     }
    
     if (player==PlayerTurn_X){
-        winnerlabel.text = @"X wins!";
+        //winnerlabel.text = @"X WINS!";
+        [self showEndGameLabelWithText:@"X WINS!"];
+        
     }else{
-        winnerlabel.text = @"O wins!";
+        
+        [self showEndGameLabelWithText:@"O WINS!"];
     }
 }
 
@@ -257,8 +275,41 @@
     for (UIButton *squareButton in [self.uiboard subviews]){
         [squareButton setEnabled:NO];
     }
-    winnerlabel.text=@"It's a Draw!";
+    
+    [self showEndGameLabelWithText:@"TIE GAME!"];
 }
 
+#pragma mark - popupview
+
+-(void)showEndGameLabelWithText:(NSString *)text{
+    
+    if (!self.popupView){
+        self.popupView = [[PopupView alloc] initWithFrame:CGRectMake(0,0, self.view.frame.size.width-self.view.frame.size.width/10, self.view.frame.size.width-self.view.frame.size.width/10)];
+        [self.popupView setCenter:self.view.center];
+        [self.view addSubview:self.popupView];
+        
+        
+        UITapGestureRecognizer *singleFingerTap =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleSingleTap:)];
+        [self.popupView addGestureRecognizer:singleFingerTap];
+    }
+
+    self.popupView.label.text = text;
+    [self.view bringSubviewToFront:self.popupView];
+    [self.popupView setHidden:NO];
+    [self.popupView showViewForever];
+    
+}
+
+
+//The event handling method
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
+    [self resetGame];
+    
+    if (segmentedControl.selectedSegmentIndex==0 && self.game.playerTurn==PlayerTurn_X){
+        [self performAI_Algorithm];
+    }
+}
 
 @end
