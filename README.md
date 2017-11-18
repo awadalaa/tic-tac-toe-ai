@@ -14,3 +14,7 @@ The minimax algorithm often used in decision theory and game theory uses the fac
 - if nobody wins 0
 
 Tic tac toe has 9 squares so the possible combinations are 9! which means it is possible to process all outcomes in a reasonable amount of time. Given this fact, from any point in the game we can make a tree of all possible combinations and assign a score at each node based on the assumption that each player will want the maximum score from that nodes children. This can be done with a recursive method for assigning the score at each node.  There is a method in Game.m file that accomplishes this task.
+
+Demo
+================
+![gif](https://github.com/awadalaa/tic-tac-toe-ai/blob/master/tictactoe.gif)
